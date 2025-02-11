@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Valentine’s Quest</title>
+  <!-- A romantic, classical font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Prevent scrolling and set a soft, romantic background */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ffe0e0, #fff0f5);
+      font-family: 'Cinzel', serif;
+      color: #d6336c;
+    }
+    /* Center each screen’s content */
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      /* Flexbox centering */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    /* Show the initial screen by default */
+    #initialScreen {
+      display: flex;
+    }
+    h1 {
+      font-size: 2.8em;
+      margin: 20px;
+    }
+    p {
+      font-size: 1.4em;
+      margin: 20px;
+    }
+    .button {
+      background-color: #d6336c;
+      border: none;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      margin: 15px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #e04e80;
+    }
+    /* ---------- Quest 1: Falling Hearts ---------- */
+    .falling-heart {
+      position: absolute;
+      font-size: 2em;
+      user-select: none;
+      cursor: pointer;
+      animation: fall 4s linear forwards;
+    }
+    @keyframes fall {
+      0% {
+        top: -50px;
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        top: 110vh;
+        opacity: 0;
+      }
+    }
+    /* ---------- Quest 2: The Love Dove ---------- */
+    #dove {
+      position: absolute;
+      font-size: 4em;
+      cursor: pointer;
+    }
+    /* ---------- Quest 3: Memory Challenge ---------- */
+    #memoryGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 15px;
+      margin-top: 20px;
+    }
+    .memoryCell {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #d6336c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      background-color: #ffe6f0;
+      cursor: pointer;
+    }
+    /* ---------- Quest 4: The Shuffling Cups ---------- */
+    #cupGame {
+      position: relative;
+      width: 600px;
+      height: 300px;
+      margin: 20px auto;
+      border: 2px solid #d6336c;
+      border-radius: 10px;
+      background-color: #ffe6f0;
+    }
+    .cup {
+      position: absolute;
+      bottom: 20px;
+      width: 100px;
+      height: 150px;
+      background-color: #ffcccb;
+      border: 2px solid #d6336c;
+      border-radius: 10px;
+      transition: left 1s ease-in-out;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .note {
+      font-size: 2em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Initial Screen: The Proposal -->
+  <div id="initialScreen" class="screen">
+    <h1>Will You Be My Valentine?</h1>
+    <p>My heart longs for you. Say “Yes” and embark on a quest to capture all of my love!</p>
+    <div>
+      <button class="button" onclick="startQuests()">Yes, with all my love!</button>
+      <button class="button" id="noButton" onclick="noAnswer()">No</button>
+    </div>
+  </div>
+
+  <!-- Quest 1: Capture All of My Love (Falling Hearts) -->
+  <div id="quest1Screen" class="screen">
+    <h1>Quest 1: Capture All of My Love</h1>
+    <p>Catch the falling hearts as they carry my love to you!</p>
+    <div id="quest1Counter">Hearts Captured: 0/15</div>
+  </div>
+
+  <!-- Quest 2: The Love Dove -->
+  <div id="quest2Screen" class="screen">
+    <h1>Quest 2: The Love Dove</h1>
+    <p>Catch the gentle dove of love by clicking it 3 times!</p>
+    <div id="quest2Counter">Dove Clicks: 0/3</div>
+    <div id="dove">🕊️</div>
+  </div>
+
+  <!-- Quest 3: Harmonize Our Hearts (Memory Challenge) -->
+  <div id="quest3Screen" class="screen">
+    <h1>Quest 3: Harmonize Our Hearts</h1>
+    <p id="memoryInstruction">Watch as a magical note appears, then find its secret resting place.</p>
+    <div id="memoryGrid"></div>
+  </div>
+
+  <!-- Quest 4: The Shuffling Cups -->
+  <div id="quest4Screen" class="screen">
+    <h1>Quest 4: The Shuffling Cups</h1>
+    <p class="instruction">
+      Under one cup lies a magical musical note of our love.<br>
+      Watch closely as the cups dance about, then choose the cup that hides the note!
+    </p>
+    <div id="cupGame"></div>
+  </div>
+
+  <!-- Final Screen: The Heartfelt Declaration -->
+  <div id="finalScreen" class="screen">
+    <h1>You’ve Captured My Heart!</h1>
+    <p>Your love shone through every quest. I am forever yours.</p>
+  </div>
+
+  <script>
+    /* ---------- INITIAL SCREEN ---------- */
+    const noButton = document.getElementById('noButton');
+    noButton.addEventListener('mouseover', () => {
+      const x = Math.random() * (window.innerWidth - noButton.clientWidth);
+      const y = Math.random() * (window.innerHeight - noButton.clientHeight);
+      noButton.style.position = 'absolute';
+      noButton.style.left = x + 'px';
+      noButton.style.top = y + 'px';
+    });
+    function noAnswer() {
+      alert("Oh, please say yes! My heart aches for your love.");
+    }
+    function startQuests() {
+      document.getElementById('initialScreen').style.display = 'none';
+      startQuest1();
+    }
+
+    /* ---------- QUEST 1: Falling Hearts ---------- */
+    let heartsCaptured = 0;
+    const totalHeartsToCapture = 15;
+    let heartInterval;
+    function startQuest1() {
+      document.getElementById('quest1Screen').style.display = 'flex';
+      const quest1Screen = document.getElementById('quest1Screen');
+      heartInterval = setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('falling-heart');
+        heart.innerText = '❤️';
+        heart.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+        quest1Screen.appendChild(heart);
+        setTimeout(() => {
+          if (heart.parentNode) {
+            heart.parentNode.removeChild(heart);
+          }
+        }, 4000);
+        heart.addEventListener('click', function() {
+          heartsCaptured++;
+          document.getElementById('quest1Counter').innerText = `Hearts Captured: ${heartsCaptured}/${totalHeartsToCapture}`;
+          heart.style.pointerEvents = 'none';
+          heart.style.opacity = '0';
+          if (heartsCaptured >= totalHeartsToCapture) {
+            clearInterval(heartInterval);
+            setTimeout(startQuest2, 1000);
+          }
+        });
+      }, 500);
+    }
+
+    /* ---------- QUEST 2: The Love Dove ---------- */
+    let doveClicks = 0;
+    const requiredDoveClicks = 3;
+    function startQuest2() {
+      document.getElementById('quest1Screen').style.display = 'none';
+      document.getElementById('quest2Screen').style.display = 'flex';
+      moveDove();
+    }
+    function moveDove() {
+      const dove = document.getElementById('dove');
+      const x = Math.random() * (window.innerWidth - dove.offsetWidth);
+      const y = Math.random() * (window.innerHeight - dove.offsetHeight);
+      dove.style.left = x + 'px';
+      dove.style.top = y + 'px';
+    }
+    document.getElementById('dove').addEventListener('click', function() {
+      doveClicks++;
+      document.getElementById('quest2Counter').innerText = `Dove Clicks: ${doveClicks}/${requiredDoveClicks}`;
+      if (doveClicks >= requiredDoveClicks) {
+        setTimeout(startQuest3, 500);
+      } else {
+        moveDove();
+      }
+    });
+
+    /* ---------- QUEST 3: Memory Challenge ---------- */
+    let memoryCorrectIndex = -1;
+    function startQuest3() {
+      document.getElementById('quest2Screen').style.display = 'none';
+      document.getElementById('quest3Screen').style.display = 'flex';
+      setupMemoryGrid();
+    }
+    function setupMemoryGrid() {
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+      // Create 9 cells (3x3 grid)
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('memoryCell');
+        cell.dataset.index = i;
+        cell.addEventListener('click', memoryCellClicked);
+        grid.appendChild(cell);
+      }
+      // Randomly select one cell to reveal a magical note (♪)
+      memoryCorrectIndex = Math.floor(Math.random() * 9);
+      const cells = document.getElementsByClassName('memoryCell');
+      cells[memoryCorrectIndex].innerText = '♪';
+      setTimeout(() => {
+        cells[memoryCorrectIndex].innerText = '';
+        document.getElementById('memoryInstruction').innerText = 'Find the cell where the magical note danced!';
+      }, 1500);
+    }
+    function memoryCellClicked(event) {
+      const clickedIndex = parseInt(event.currentTarget.dataset.index);
+      if (clickedIndex === memoryCorrectIndex) {
+        alert("Your memory is as sweet as your love!");
+        setTimeout(startQuest4, 500);
+      } else {
+        alert("Oh no, that's not it. Try again, my love!");
+      }
+    }
+
+    /* ---------- QUEST 4: The Shuffling Cups ---------- */
+    const totalCups = 3;
+    const cupPositions = [50, 250, 450]; // Left positions (in px) for the cups
+    let cups = []; // Store cup elements
+    let winningCupIndex; // The cup hiding the note
+    function startQuest4() {
+      document.getElementById('quest3Screen').style.display = 'none';
+      document.getElementById('quest4Screen').style.display = 'flex';
+      startCupGame();
+    }
+    function startCupGame() {
+      const cupGame = document.getElementById('cupGame');
+      cupGame.innerHTML = ''; // Clear previous cups
+      cups = [];
+      // Create cups at fixed positions
+      for (let i = 0; i < totalCups; i++) {
+        const cup = document.createElement('div');
+        cup.classList.add('cup');
+        cup.style.left = cupPositions[i] + 'px';
+        cup.dataset.index = i;
+        cupGame.appendChild(cup);
+        cups.push(cup);
+      }
+      // Randomly choose one cup to hide the note
+      winningCupIndex = Math.floor(Math.random() * totalCups);
+      const winningCup = cups[winningCupIndex];
+      const noteSpan = document.createElement('span');
+      noteSpan.classList.add('note');
+      noteSpan.innerText = '♪';
+      winningCup.appendChild(noteSpan);
+      // Reveal the note for 2 seconds, then hide it and start shuffling
+      setTimeout(() => {
+        noteSpan.style.visibility = 'hidden';
+        shuffleCups(3);
+      }, 2000);
+    }
+    function shuffleCups(rounds) {
+      if (rounds <= 0) {
+        enableCupClicks();
+        return;
+      }
+      let newPositions = [...cupPositions];
+      newPositions.sort(() => Math.random() - 0.5);
+      cups.forEach((cup, i) => {
+        cup.style.left = newPositions[i] + 'px';
+      });
+      setTimeout(() => {
+        shuffleCups(rounds - 1);
+      }, 1000);
+    }
+    function enableCupClicks() {
+      cups.forEach(cup => {
+        cup.addEventListener('click', selectCup);
+      });
+    }
+    function selectCup(event) {
+      const selectedIndex = parseInt(event.currentTarget.dataset.index);
+      if (selectedIndex === winningCupIndex) {
+        alert("Correct! You've found the note of our love!");
+        setTimeout(showFinalScreen, 500);
+      } else {
+        alert("Oh no, that's not it. Try again!");
+        resetCupGame();
+      }
+    }
+    function resetCupGame() {
+      cups.forEach(cup => {
+        cup.removeEventListener('click', selectCup);
+      });
+      setTimeout(startCupGame, 1000);
+    }
+
+    /* ---------- FINAL SCREEN ---------- */
+    function showFinalScreen() {
+      document.getElementById('quest4Screen').style.display = 'none';
+      document.getElementById('finalScreen').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
