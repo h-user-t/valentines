@@ -148,14 +148,14 @@
   <div id="quest1Screen" class="screen">
     <h1>Quest 1: Capture All of My Love</h1>
     <p>Catch the falling hearts as they carry my love to you!</p>
-    <div id="quest1Counter">Hearts Captured: 0/15</div>
+    <div id="quest1Counter">Hearts Captured: 0/5</div>
   </div>
 
   <!-- Quest 2: The Love Dove -->
   <div id="quest2Screen" class="screen">
     <h1>Quest 2: The Love Dove</h1>
-    <p>Catch the gentle dove of love by clicking it 3 times!</p>
-    <div id="quest2Counter">Dove Clicks: 0/3</div>
+    <p>Catch the gentle dove of love by clicking it 5 times!</p>
+    <div id="quest2Counter">Dove Clicks: 0/5</div>
     <div id="dove">🕊️</div>
   </div>
 
@@ -202,7 +202,7 @@
 
     /* ---------- QUEST 1: Falling Hearts ---------- */
     let heartsCaptured = 0;
-    const totalHeartsToCapture = 15;
+    const totalHeartsToCapture = 5;
     let heartInterval;
     function startQuest1() {
       document.getElementById('quest1Screen').style.display = 'flex';
@@ -233,7 +233,7 @@
 
     /* ---------- QUEST 2: The Love Dove ---------- */
     let doveClicks = 0;
-    const requiredDoveClicks = 3;
+    const requiredDoveClicks = 5;
     function startQuest2() {
       document.getElementById('quest1Screen').style.display = 'none';
       document.getElementById('quest2Screen').style.display = 'flex';
